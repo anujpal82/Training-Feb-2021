@@ -15,9 +15,8 @@ import { Navbar } from "../../components/Portal/Navbar";
 
 export const Home = (props) => {
   var todayDate = new Date();
-  var lastUpdateddate = `${todayDate.getDate()}/${
-    todayDate.getMonth() + 1
-  }/${todayDate.getFullYear()}`;
+  var lastUpdateddate = `${todayDate.getDate()}/${todayDate.getMonth() + 1
+    }/${todayDate.getFullYear()}`;
   // const [state, setstate] = useState(false);
   const [MiniStatement, setMiniStatement] = useState({
     startingDate: "",
@@ -124,79 +123,6 @@ export const Home = (props) => {
                 Find
               </button>
             </form>
-            {/* {showTranjaction ? (
-              <table className="table bg-ligt ">
-                <tr>
-                  <td
-                    className="h6 border border-success"
-                    style={{ color: "#064420" }}
-                  >
-                    Debit Account
-                  </td>
-                  <td
-                    className="h6 border border-success"
-                    style={{ color: "#064420" }}
-                  >
-                    Name
-                  </td>
-                  <td
-                    className="h6 border border-success"
-                    style={{ color: "#064420" }}
-                  >
-                    Credit Account
-                  </td>
-                  <td
-                    className="h6 border border-success"
-                    style={{ color: "#064420" }}
-                  >
-                    Name
-                  </td>
-                  <td
-                    className="h6 border border-success"
-                    style={{ color: "#064420" }}
-                  >
-                    Date
-                  </td>
-                  <td
-                    className="h6 border border-success"
-                    style={{ color: "#064420" }}
-                  >
-                    Amount
-                  </td>
-                  <td
-                    className="h6 border border-success"
-                    style={{ color: "#064420" }}
-                  >
-                    Type
-                  </td>
-                </tr>
-
-                <tbody>
-                  {statement.map((item) => {
-                    let tempDate = new Date(item.date);
-                    let month = tempDate.getMonth() + 1;
-                    let year = tempDate.getFullYear();
-                    let day = tempDate.getDate();
-                    let date = `${day}/${month}/${year}`;
-                    return (
-                      <tr>
-                        <td className="border border-success">
-                          {item.debitAccountNo}
-                        </td>
-                        <td className="border border-success">{item.dname}</td>
-                        <td className="border border-success">
-                          {item.creditAccountNo}
-                        </td>
-                        <td className="border border-success">{item.cname}</td>
-                        <td className="border border-success">{date}</td>
-                        <td className="border border-success">{item.amount}</td>
-                        <td className="border border-success">{item.type}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            ) : null} */}
           </div>
 
           <div class=" col m-4 card card border-0" style={{ width: "18rem" }}>
@@ -216,12 +142,12 @@ export const Home = (props) => {
             </div>
           </div>
         </div>
-        <div className="row mt-3">
-          <div className="col-lg-8 mx-auto">
+        <div className="row mt-3 m-1">
+          <div className="col-lg-8 mx-auto ">
             {showTranjaction ? (
               <div>
                 <h3 className="text-center ">Recent 10 Tranjaction</h3>
-                <table className="table bg-ligt mt-4 ">
+                <table className="table bg-ligt mt-4  text-center">
                   <tr>
                     <td
                       className="h6 border border-success"
@@ -258,6 +184,7 @@ export const Home = (props) => {
                       style={{ color: "#064420" }}
                     >
                       Amount
+
                     </td>
                     <td
                       className="h6 border border-success"
@@ -290,7 +217,7 @@ export const Home = (props) => {
                           </td>
                           <td className="border border-success">{date}</td>
                           <td className="border border-success">
-                            {item.amount}
+                            {item.amount}      <span>< FaRupeeSign /></span>
                           </td>
                           <td className="border border-success">{item.type}</td>
                         </tr>
