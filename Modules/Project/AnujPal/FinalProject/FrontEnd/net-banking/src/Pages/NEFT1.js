@@ -17,14 +17,15 @@ import { BiTransferAlt } from "react-icons/bi";
 
 export const NEFT1 = (props) => {
   var todayDate = new Date();
-  var lastUpdateddate = `${todayDate.getDate()}/${
-    todayDate.getMonth() + 1
-  }/${todayDate.getFullYear()}`;
+  var lastUpdateddate = `${todayDate.getDate()}/${todayDate.getMonth() + 1
+    }/${todayDate.getFullYear()}`;
   const [ben, setBen] = useState([]);
   const [state1, setstate1] = useState(false);
-  // const [state2, setstate2] = useState(false);
   const [Transfer, setTransfer] = useState(false);
   const [customer, setCustomer] = useState({});
+  const [formError, setFormError] = useState({ amountError: "" });
+  const [addBenError, setAddBenError] = useState({ fnameError: "", mnameError: "", lnameError: "", CRNError: "", accountNoError: "", IFSCError: "" })
+  const [formFlag, setFormFlag] = useState({ amountError: false, fnameError: false, mnameError: false, lnameError: false, CRNError: false, accountNoError: false, IFSCError: false })
   const [NEFT, setNEFT] = useState({
     debitAccountNo: "",
     creditAccountNo: "",
@@ -64,6 +65,106 @@ export const NEFT1 = (props) => {
         console.log(err.message);
       });
   };
+  const formValidation = (e) => {
+    const { name, value } = e.target;
+    switch (name) {
+      case "amount":
+        if (value < 100) {
+          setFormError({
+            ...formError,
+            amountError: "amount cannot be less than 100",
+          });
+          setFormFlag({ ...formFlag, amountError: false })
+        } else {
+          setFormError({ ...formError, amountError: "" });
+          setFormFlag({ ...formFlag, amountError: true })
+        }
+
+        break;
+      case "fname":
+        var pattern = new RegExp("^[a-zA-Z]+$");
+        if (value.length < 3) {
+          setAddBenError({ ...addBenError, fnameError: "Minimum 3 character required" })
+          setFormFlag({ ...formFlag, fnameError: false })
+        }
+        else {
+          setAddBenError({ ...addBenError, fnameError: "" })
+          setFormFlag({ ...formFlag, fnameError: true })
+        }
+        break;
+      case "mname":
+        if (value.length < 3) {
+          setAddBenError({ ...addBenError, mnameError: "Minimum 3 character required" })
+          setFormFlag({ ...formFlag, mnameError: false })
+        }
+        else {
+          setAddBenError({ ...addBenError, mnameError: "" })
+          setFormFlag({ ...formFlag, mnameError: true })
+        }
+        break;
+      case "lname":
+        if (value.length < 3) {
+          setAddBenError({ ...addBenError, lnameError: "Minimum 3 character required" })
+          setFormFlag({ ...formFlag, lnameError: false })
+        }
+        else {
+          setAddBenError({ ...addBenError, lnameError: "" })
+          setFormFlag({ ...formFlag, lnameError: true })
+        }
+        break;
+      case "CRN":
+        var pattern1 = new RegExp("^[0-9]+$", "g");
+        if (value.length <= 2) {
+          setAddBenError({ ...addBenError, CRNError: "minimum 3 digit required" });
+          setFormFlag({ ...formFlag, CRNError: false })
+        } else if (!pattern1.test(value)) {
+          setAddBenError({ ...addBenError, CRNError: "Only digits are allowed" });
+          setFormFlag({ ...formFlag, CRNError: false })
+          // setFormFlag({ ...formFlag, CRNFlag: false });
+        } else {
+          setAddBenError({ ...addBenError, CRNError: "" });
+          setFormFlag({ ...formFlag, CRNError: true })
+        }
+        break;
+      case "accountNo":
+        var pattern2 = new RegExp("^[0-9]+$");
+        if (value.length < 3) {
+          setAddBenError({
+            ...addBenError,
+            accountNoError: "Account number should be atleast 3 digit",
+          });
+          setFormFlag({ ...formFlag, accountNoError: false })
+        } else {
+          setAddBenError({
+            ...addBenError,
+            accountNoError: "",
+          });
+          setFormFlag({ ...formFlag, accountNoError: true })
+        }
+        break;
+      case "IFSC":
+        var pattern4 = new RegExp("^[A-Za-z0-9_-]*$");
+        if (value.length <= 3) {
+          setAddBenError({
+            ...addBenError,
+            IFSCError: "minimum 4 character required",
+          });
+          setFormFlag({ ...formFlag, IFSCError: false })
+        } else if (!pattern4.test(value)) {
+          setAddBenError({
+            ...addBenError,
+            IFSCError: "only digits and letters allowed",
+          });
+          setFormFlag({ ...formFlag, IFSCError: false })
+        } else {
+          setAddBenError({ ...addBenError, IFSCError: "" });
+          setFormFlag({ ...formFlag, IFSCError: true })
+        }
+        break;
+      default:
+        break;
+    }
+  };
 
   const LogOut = (e) => {
     localStorage.clear();
@@ -90,7 +191,7 @@ export const NEFT1 = (props) => {
             ProjectService.NEFT(NEFT)
               .then((res1) => {
                 console.log(res1.data);
-                // setstate(true);
+                alert("succesfully fund transferred !!!!!!!!!")
               })
               .catch((err) => {
                 console.log(err);
@@ -185,153 +286,6 @@ export const NEFT1 = (props) => {
                 Add Beneficiary
               </button>
             </div>
-            {/* {state1 ? (
-              <div className="mx-auto mt-5">
-                <form className="bg-light p-4 m-4 mt-5" id="addBenficiaryForm">
-                  <h3 className="text-center mb-5 ">
-                    Beneficiary Register Form
-                  </h3>
-                  <div className="row">
-                    <div className="col">
-                      <input
-                        type="text"
-                        placeholder="First Name"
-                        className="form-control"
-                        name="fname"
-                        onChange={(e) => {
-                          setAddBenificiary({
-                            ...addBenificiary,
-                            [e.target.name]: e.target.value,
-                          });
-                        }}
-                      ></input>
-                    </div>
-                    <div className="col">
-                      {" "}
-                      <input
-                        type="text"
-                        placeholder="Middle Name"
-                        className="form-control"
-                        onChange={(e) => {
-                          setAddBenificiary({
-                            ...addBenificiary,
-                            [e.target.name]: e.target.value,
-                          });
-                        }}
-                        name="mname"
-                      ></input>
-                    </div>
-                    <div className="col">
-                      {" "}
-                      <input
-                        type="text"
-                        placeholder="Last Name"
-                        className="form-control"
-                        onChange={(e) => {
-                          setAddBenificiary({
-                            ...addBenificiary,
-                            [e.target.name]: e.target.value,
-                          });
-                        }}
-                        name="lname"
-                      ></input>
-                    </div>
-                  </div>
-                  <input
-                    type="text"
-                    className="form-control mt-3"
-                    placeholder="Customer Relationship Number"
-                    name="CRN"
-                    onChange={(e) => {
-                      setAddBenificiary({
-                        ...addBenificiary,
-                        [e.target.name]: e.target.value,
-                      });
-                    }}
-                  ></input>
-                  <input
-                    type="text"
-                    className="form-control mt-3"
-                    placeholder="Account Number"
-                    name="accountNo"
-                    onChange={(e) => {
-                      setAddBenificiary({
-                        ...addBenificiary,
-                        [e.target.name]: e.target.value,
-                      });
-                    }}
-                  ></input>
-
-                  <input
-                    type="text"
-                    className="form-control mt-3"
-                    placeholder="IFSC Code"
-                    name="IFSC"
-                    onChange={(e) => {
-                      setAddBenificiary({
-                        ...addBenificiary,
-                        [e.target.name]: e.target.value,
-                      });
-                    }}
-                  ></input>
-                  <button
-                    type="submit"
-                    className="btn btn-secondary mt-5 w-100"
-                    onClick={Register}
-                  >
-                    Register
-                  </button>
-                </form>
-              </div>
-            ) : null} */}
-            {/* {Transfer ? (
-              <form class="p-4 p-md-5 border rounded-3 bg-light mt-5">
-                <h3 className="text-center mb-5">NEFT</h3>{" "}
-                <div class="form-group-sm mb-3">
-                  {" "}
-                  <select
-                    className="form-control"
-                    onChange={(e) => {
-                      setNEFT({ ...NEFT, debitAccountNo: e.target.value });
-                    }}
-                  >
-                    <option selected> debit Account Number</option>
-                    {CRN.map((item, key) => {
-                      return <option key={key}>{item.accountNo}</option>;
-                    })}
-                  </select>
-                </div>
-                <div class="form-group-sm mb-3">
-                  <select className="form-control">
-                    <option selected> Credit Account Number</option>
-                    {ben.map((item) => {
-                      return <option>{item.accountNo}</option>;
-                    })}
-                  </select>
-                </div>
-                <div class="form-group-sm mb-3">
-                  <input
-                    type="number"
-                    class="form-control"
-                    placeholder="Amount"
-                    name="amount"
-                    value={NEFT.amount}
-                    onChange={(e) => {
-                      setNEFT({ ...NEFT, [e.target.name]: e.target.value });
-                    }}
-                  />
-                </div>
-                <div id="recaptcha-container"></div>
-                <button
-                  class="w-100 btn  btn-primary mt-3 "
-                  type="submit"
-                  onClick={Submit}
-                >
-                  Submit
-                </button>
-                <hr class="my-4" />
-              </form>
-            ) : null} */}
           </div>
 
           <div class=" col m-4 card card border-0 " style={{ width: "18rem" }}>
@@ -368,6 +322,7 @@ export const NEFT1 = (props) => {
                       placeholder="First Name"
                       className="form-control"
                       name="fname"
+                      onInput={formValidation}
                       onChange={(e) => {
                         setAddBenificiary({
                           ...addBenificiary,
@@ -375,6 +330,7 @@ export const NEFT1 = (props) => {
                         });
                       }}
                     ></input>
+                    <span className="text-danger"><small>{addBenError.fnameError}</small></span>
                   </div>
                   <div className="col">
                     {" "}
@@ -389,7 +345,9 @@ export const NEFT1 = (props) => {
                         });
                       }}
                       name="mname"
+                      onInput={formValidation}
                     ></input>
+                    <span className="text-danger"><small>{addBenError.mnameError}</small></span>
                   </div>
                   <div className="col">
                     {" "}
@@ -397,6 +355,7 @@ export const NEFT1 = (props) => {
                       type="text"
                       placeholder="Last Name"
                       className="form-control"
+                      onInput={formValidation}
                       onChange={(e) => {
                         setAddBenificiary({
                           ...addBenificiary,
@@ -405,6 +364,7 @@ export const NEFT1 = (props) => {
                       }}
                       name="lname"
                     ></input>
+                    <span className="text-danger"><small>{addBenError.lnameError}</small></span>
                   </div>
                 </div>
                 <input
@@ -412,6 +372,7 @@ export const NEFT1 = (props) => {
                   className="form-control mt-3"
                   placeholder="Customer Relationship Number"
                   name="CRN"
+                  onInput={formValidation}
                   onChange={(e) => {
                     setAddBenificiary({
                       ...addBenificiary,
@@ -419,11 +380,13 @@ export const NEFT1 = (props) => {
                     });
                   }}
                 ></input>
+                <span className="text-danger"><small>{addBenError.CRNError}</small></span>
                 <input
                   type="text"
                   className="form-control mt-3"
                   placeholder="Account Number"
                   name="accountNo"
+                  onInput={formValidation}
                   onChange={(e) => {
                     setAddBenificiary({
                       ...addBenificiary,
@@ -431,12 +394,14 @@ export const NEFT1 = (props) => {
                     });
                   }}
                 ></input>
+                <span className="text-danger"><small>{addBenError.accountNoError}</small></span>
 
                 <input
                   type="text"
                   className="form-control mt-3"
                   placeholder="IFSC Code"
                   name="IFSC"
+                  onInput={formValidation}
                   onChange={(e) => {
                     setAddBenificiary({
                       ...addBenificiary,
@@ -444,10 +409,12 @@ export const NEFT1 = (props) => {
                     });
                   }}
                 ></input>
+                <span className="text-danger"><small>{addBenError.IFSCError}</small></span>
                 <button
                   type="submit"
                   className="btn btn-secondary mt-5 w-100"
                   onClick={Register}
+                  disabled={(formFlag.fnameError === true && formFlag.mnameError === true && formFlag.lnameError === true && formFlag.CRNError === true && formFlag.accountNoError === true && formFlag.IFSCError === true) ? false : true}
                 >
                   Register
                 </button>
@@ -493,18 +460,24 @@ export const NEFT1 = (props) => {
                   type="number"
                   class="form-control"
                   placeholder="Amount"
+                  onInput={formValidation}
                   name="amount"
                   value={NEFT.amount}
+
                   onChange={(e) => {
                     setNEFT({ ...NEFT, [e.target.name]: e.target.value });
                   }}
                 />
+                <span className="text-danger">
+                  <small>{formError.amountError}</small>
+                </span>
               </div>
               <div id="recaptcha-container"></div>
               <button
                 class="w-100 btn  btn-primary mt-3 "
                 type="submit"
                 onClick={Submit}
+                disabled={formError.amountError === "" ? false : true}
               >
                 Submit
               </button>

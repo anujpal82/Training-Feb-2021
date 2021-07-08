@@ -5,16 +5,18 @@ import FireBase from '../Fire-Base/FireBase'
 import { AiOutlineCopyright } from "react-icons/ai";
 
 export const ApplyForFD = (props) => {
-  var todayDate=new Date()
-  var lastUpdateddate=`${todayDate.getDate()}/${todayDate.getMonth()+1}/${todayDate.getFullYear()}`
+  var todayDate = new Date()
+  var lastUpdateddate = `${todayDate.getDate()}/${todayDate.getMonth() + 1}/${todayDate.getFullYear()}`
   const [customer, setCustomer] = useState({});
+  const [formError, setFormError] = useState({ amountError: "" })
+  const [formFlag, setFormFlag] = useState({ amountFlag: false })
   const [FD, setFD] = useState({ amount: "", duration: "" });
   useEffect(() => {
     ProjectService.getCustomer(props.match.params.id).then((res) => {
       setCustomer(res.data[0]);
     });
   }, [props.match.params.id]);
-  const Apply = async(e) => {
+  const Apply = async (e) => {
     e.preventDefault()
     let recaptcha = new FireBase.auth.RecaptchaVerifier("recaptcha-container");
     let number = "+918128501852";
@@ -43,6 +45,24 @@ export const ApplyForFD = (props) => {
       });
 
   };
+  const formValidation = (e) => {
+    const { name, value } = e.target
+    switch (name) {
+      case 'amount':
+        if (value < 10000) {
+          setFormError({ ...formError, amountError: "amount cannot be less than 10000" })
+          setFormFlag({ ...formFlag, amountFlag: false })
+        }
+        else {
+          setFormError({ ...formError, amountError: "" })
+          setFormFlag({ ...formFlag, amountFlag: true })
+        }
+        break;
+
+      default:
+        break;
+    }
+  }
   const calculateMoney = (e) => {
     e.preventDefault();
     let intrest = 6;
@@ -77,6 +97,7 @@ export const ApplyForFD = (props) => {
       default:
         break;
     }
+
   };
   return (
     <>
@@ -107,8 +128,10 @@ export const ApplyForFD = (props) => {
             onChange={(e) => {
               setFD({ ...FD, [e.target.name]: e.target.value });
             }}
+            onInput={formValidation}
             className="form-control"
           />
+          <span className="text-danger"><small>{formError.amountError}</small></span>
           <div className="mt-3 text-success mb-1 p-1 ">Duration</div>
           <div className="row">
             <div className="col">
@@ -139,28 +162,28 @@ export const ApplyForFD = (props) => {
           </div>
           <div className="mt-4" id="recaptcha-container"></div>
           <div className="mt-5 ">
-            <button className="btn btn-secondary w-100 " onClick={Apply}>
+            <button className="btn btn-secondary w-100 " onClick={Apply} disabled={formFlag.amountFlag === true ? false : true}>
               Apply
             </button>
           </div>
-      
+
         </form>
       </div>
-      <hr className="bg-secondary"/>
+      <hr className="bg-secondary" />
       <article className="container mb-5 ">
-      <div className="row">
-      <div className="col">
-      <small className="ml-3">Last Updated On :</small><small className="ml-2 ">{lastUpdateddate}</small>
-        <small className="ml-3 ">|</small>
-        <small className="ml-3 ">Visitors : 27591024</small>
-      </div>
+        <div className="row">
+          <div className="col">
+            <small className="ml-3">Last Updated On :</small><small className="ml-2 ">{lastUpdateddate}</small>
+            <small className="ml-3 ">|</small>
+            <small className="ml-3 ">Visitors : 27591024</small>
+          </div>
 
 
-        <div className="col">
-          <small className="float-right mr-3">Copyright <AiOutlineCopyright/> {todayDate.getFullYear()} Internet Banking project.All Rights Reserved </small>
+          <div className="col">
+            <small className="float-right mr-3">Copyright <AiOutlineCopyright /> {todayDate.getFullYear()} Internet Banking project.All Rights Reserved </small>
+          </div>
         </div>
-      </div>
-   
+
       </article>
     </>
   );

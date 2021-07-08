@@ -18,6 +18,8 @@ export const Login = (props) => {
   let tempAccountNo = "";
   const [loginData, setLogindata] = useState({ userId: "", pass: "" });
 
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     await ProjectService.login(loginData).then(async (res) => {
@@ -32,8 +34,6 @@ export const Login = (props) => {
       alert("You Successfully Login To the system");
       props.history.push(`/Home/${tempAccountNo}`);
     }
-
-    // props.history.push("/Portal");
   };
   const Register = () => {
     props.history.push("/signUp");
@@ -41,13 +41,13 @@ export const Login = (props) => {
   return (
     <>
       <Navbar></Navbar>
-      <div className="container  ">
-        <div className=" row    py-5  ">
+      <div className="container" >
+        <div className=" row py-5  ">
           <div className="col-lg-7 text-center text-lg-start ">
             <h1 className="display-4 font-weight-bold lh-1 mb-3 text-center">
-              Online Internet Banking Dummy Project
+              Online Internet Banking Project
             </h1>
-            <p className=" fs-5 ml-3 text-center ">
+            <p className="  text-center ">
               Lorem ipsum dolor sit, amet consectetur adipisicing elit.
               Blanditiis natus tempora provident maxime voluptate corrupti,
               molestiae commodi, recusandae earum beatae ullam nulla non sint.
@@ -85,7 +85,7 @@ export const Login = (props) => {
                     });
                   }}
                 />
-                {/* <label for="password">Password</label> */}
+
               </div>
 
               <div className="row mt-3">
@@ -128,7 +128,7 @@ export const Login = (props) => {
                   backgroundColor: "#c0c0c0",
                   position: "relative",
                   height: "3rem",
-                  padding: "13px 0",
+
                 }}
               >
                 <img
@@ -157,7 +157,7 @@ export const Login = (props) => {
                   backgroundColor: "#c0c0c0",
                   position: "relative",
                   height: "3rem",
-                  padding: "13px 0",
+
                 }}
               >
                 <img
@@ -186,7 +186,7 @@ export const Login = (props) => {
                   backgroundColor: "#c0c0c0",
                   position: "relative",
                   height: "3rem",
-                  padding: "13px 0",
+
                 }}
               >
                 <img
@@ -215,7 +215,7 @@ export const Login = (props) => {
                   backgroundColor: "#c0c0c0",
                   position: "relative",
                   height: "3rem",
-                  padding: "13px 0",
+
                 }}
               >
                 <img

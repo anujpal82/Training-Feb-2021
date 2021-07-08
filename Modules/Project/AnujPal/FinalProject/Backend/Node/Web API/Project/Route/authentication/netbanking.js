@@ -61,7 +61,7 @@ class demoNetBanking {
       pass: pass,
       role: req.body.role,
       fname: req.body.fname,
-      mname: req.body.mname,
+      mname:req.body.mname,
       lname: req.body.lname,
       email: req.body.email,
       phoneNo: req.body.phoneNo,

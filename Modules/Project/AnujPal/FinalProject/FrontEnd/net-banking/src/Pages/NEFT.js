@@ -13,17 +13,39 @@ import image2 from "../components/Images/25.jpg";
 import image3 from "../components/Images/26.jpg";
 export const NEFT = (props) => {
   var todayDate = new Date();
-  var lastUpdateddate = `${todayDate.getDate()}/${
-    todayDate.getMonth() + 1
-  }/${todayDate.getFullYear()}`;
+  var lastUpdateddate = `${todayDate.getDate()}/${todayDate.getMonth() + 1
+    }/${todayDate.getFullYear()}`;
   const [customer, setCustomer] = useState({});
   const [state, setstate] = useState(false);
+  const [formError, setFormError] = useState({ amountError: "" });
+  const [formFlag, setFormFlag] = useState({ amountError: false,})
   const [CRN, setCRN] = useState([]);
   const [NEFT, setNEFT] = useState({
-    debitAccountNo: "",
-    creditAccountNo: "",
+    debitAccountNo: "a",
+    creditAccountNo: "b",
     amount: "",
   });
+  const formValidation = (e) => {
+    const { name, value } = e.target
+    switch (name) {
+      case "amount":
+        if (value < 100) {
+          setFormError({
+            ...formError,
+            amountError: "amount cannot be less than 100",
+          });
+          setFormFlag({ ...formFlag, amountError: false })
+        } else {
+          setFormError({ ...formError, amountError: "" });
+          setFormFlag({ ...formFlag, amountError: true })
+        }
+
+        break;
+
+      default:
+        break;
+    }
+  }
 
   useEffect(() => {
     ProjectService.getCustomer(props.match.params.id).then((res) => {
@@ -73,14 +95,19 @@ export const NEFT = (props) => {
             ProjectService.NEFT(NEFT)
               .then((res1) => {
                 console.log(res1.data);
-                setstate(true);
+                alert("Successfully fund transferred")
+                setNEFT({
+                  debitAccountNo: "a",
+                  creditAccountNo: "b",
+                  amount: ""
+                })
               })
               .catch((err) => {
                 console.log(err);
               });
           })
           .catch((err) => {
-            console.log(err.message);
+            alert(err.message);
           });
       })
       .catch((err) => {
@@ -127,7 +154,7 @@ export const NEFT = (props) => {
                     setNEFT({ ...NEFT, debitAccountNo: e.target.value });
                   }}
                 >
-                  <option selected> debit Account Number</option>
+                  <option value="a" selected> debit Account Number</option>
                   {CRN.map((item, key) => {
                     return <option key={key}>{item.accountNo}</option>;
                   })}
@@ -140,7 +167,7 @@ export const NEFT = (props) => {
                     setNEFT({ ...NEFT, creditAccountNo: e.target.value });
                   }}
                 >
-                  <option selected> Credit Account Number</option>
+                  <option value="b" selected> Credit Account Number</option>
 
                   {CRN.map((item, key) => {
                     return (
@@ -166,10 +193,12 @@ export const NEFT = (props) => {
                   placeholder="Amount"
                   name="amount"
                   value={NEFT.amount}
+                  onInput={formValidation}
                   onChange={(e) => {
                     setNEFT({ ...NEFT, [e.target.name]: e.target.value });
                   }}
                 />
+                <span className="text-danger"><small>{formError.amountError}</small></span>
               </div>
               <div id="recaptcha-container"></div>
 
@@ -177,6 +206,7 @@ export const NEFT = (props) => {
                 class="w-100 btn btn-lg btn-primary mt-3 "
                 type="submit"
                 onClick={Submit}
+                disabled={formFlag.amountError===false ?true:false}
               >
                 Submit
               </button>

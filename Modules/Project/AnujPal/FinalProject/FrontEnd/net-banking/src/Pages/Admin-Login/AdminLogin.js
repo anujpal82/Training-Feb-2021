@@ -29,10 +29,10 @@ export const AdminLogin = (props) => {
       <div className="col-md-10  col-lg-5 container mt-5 ">
         <form class="p-4 p-md-5 col-md-6 mx-auto border rounded-3 bg-light mt-5">
           <h3 className="text-center mb-5">Admin Login</h3>
-          <div class="form-floating mb-3">
+          <div class="form-group-sm mb-3">
             <input
               type="text"
-              className="form-control"
+              className="  form-control"
               placeholder="Enter User-Id"
               name="userId"
               onChange={(e) => {
@@ -43,7 +43,7 @@ export const AdminLogin = (props) => {
               }}
             />
           </div>
-          <div className="form-floating mb-3">
+          <div className="form-group-sm mb-3">
             <input
               type="password"
               class="form-control"

@@ -12,9 +12,8 @@ import ProjectService from "../../Services/LoginService";
 
 export const Loan = (props) => {
   var todayDate = new Date();
-  var lastUpdateddate = `${todayDate.getDate()}/${
-    todayDate.getMonth() + 1
-  }/${todayDate.getFullYear()}`;
+  var lastUpdateddate = `${todayDate.getDate()}/${todayDate.getMonth() + 1
+    }/${todayDate.getFullYear()}`;
   const [Loan, setLoan] = useState({
     CRN: "",
     accountNo: "",
@@ -24,6 +23,8 @@ export const Loan = (props) => {
   const [emi, setEmi] = useState(0);
   const [monthRemaining, setMonthRemaining] = useState(0);
   const [CRN, setCRN] = useState([]);
+  const [formError, setFormError] = useState({ CRNError: "", amountError: "" })
+  const [formFlag, setFormFlag] = useState({ CRNFlag: false, amountFlag: false })
   const [customer, setCustomer] = useState({});
   useEffect(() => {
     ProjectService.getCustomer(props.match.params.id).then((res) => {
@@ -37,17 +38,42 @@ export const Loan = (props) => {
     localStorage.clear();
     props.history.push("/");
   };
+  const formValidation = (e) => {
+    const { name, value } = e.target;
+    switch (name) {
+      case "CRN":
+        var pattern1 = new RegExp("^[0-9]+$", "g");
+        if (value.length <= 2) {
+          setFormError({ ...formError, CRNError: "minimum 3 digit required" });
+          setFormFlag({ ...formFlag, CRNFlag: false })
+        } else if (!pattern1.test(value)) {
+          setFormError({ ...formError, CRNError: "Only digits are allowed" });
+
+          setFormFlag({ ...formFlag, CRNFlag: false });
+        } else {
+          setFormError({ ...formError, CRNError: "" });
+          setFormFlag({ ...formFlag, CRNFlag: true })
+        }
+        break;
+      case "amount":
+        if (value < 10000) {
+          setFormError({
+            ...formError,
+            amountError: "amount cannot be less than 10000",
+          });
+          setFormFlag({ ...formFlag, amountFlag: false })
+        } else {
+          setFormError({ ...formError, amountError: "" });
+          setFormFlag({ ...formFlag, amountFlag: true })
+        }
+
+        break;
+      default:
+        break;
+    }
+  }
   const Apply = async (e) => {
     e.preventDefault();
-    // ProjectService.loanApprove(Loan).then((res) => {
-    //   console.log(res.data);
-    // });
-    // ProjectService.loanNEFT({
-    //   accountNo: Loan.accountNo,
-    //   amount: Loan.amount,
-    // }).then((res) => {
-    //   console.log(res.data);
-    // });
     let recaptcha = new FireBase.auth.RecaptchaVerifier("recaptcha-container");
     let number = "+918128501852";
     await FireBase.auth()
@@ -172,12 +198,14 @@ export const Loan = (props) => {
             <input
               type="text"
               className="form-control"
+              onInput={formValidation}
               name="CRN"
               placeholder="Customer Relationship Number"
               onChange={(e) => {
                 setLoan({ ...Loan, [e.target.name]: e.target.value });
               }}
             />
+               <span className="text-danger"><small>{formError.CRNError}</small></span>
 
             <select
               className="form-control mt-3 "
@@ -196,10 +224,12 @@ export const Loan = (props) => {
               className="form-control mt-3"
               name="amount"
               placeholder="Amount"
+              onInput={formValidation}
               onChange={(e) => {
                 setLoan({ ...Loan, [e.target.name]: e.target.value });
               }}
             />
+            <span className="text-danger"><small>{formError.amountError}</small></span>
             <div className="row ">
               <div className="col">
                 {" "}
@@ -230,6 +260,7 @@ export const Loan = (props) => {
             <button
               type="button"
               className="btn btn-primary w-100 mt-5"
+              disabled={formFlag.CRNFlag===true && formFlag.amountFlag===true ? false:true}
               onClick={Apply}
             >
               Apply

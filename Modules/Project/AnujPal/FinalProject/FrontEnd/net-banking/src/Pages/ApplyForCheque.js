@@ -2,22 +2,24 @@ import React, { useEffect, useState } from "react";
 import { AiOutlineCopyright } from "react-icons/ai";
 import { Navbar } from "../components/Portal/Navbar";
 import ProjectService from "../Services/LoginService";
-import FireBase from '../Fire-Base/FireBase'
+import FireBase from "../Fire-Base/FireBase";
 
 export const ApplyForCheque = (props) => {
-  var todayDate=new Date()
-  var lastUpdateddate=`${todayDate.getDate()}/${todayDate.getMonth()+1}/${todayDate.getFullYear()}`
+  var todayDate = new Date();
+  var lastUpdateddate = `${todayDate.getDate()}/${
+    todayDate.getMonth() + 1
+  }/${todayDate.getFullYear()}`;
   const [customer, setustomer] = useState({});
   useEffect(() => {
     ProjectService.getCustomer(props.match.params.id).then((res) => {
       setustomer(res.data[0]);
     });
   }, [props.match.params.id]);
-  const Apply=async(e)=>{
-      e.preventDefault()
-  
+  const Apply = async (e) => {
+    e.preventDefault();
+
     let recaptcha = new FireBase.auth.RecaptchaVerifier("recaptcha-container");
-    let number =  '+918128501852';
+    let number = "+918128501852";
     await FireBase.auth()
       .signInWithPhoneNumber(number, recaptcha)
       .then((res) => {
@@ -26,11 +28,19 @@ export const ApplyForCheque = (props) => {
         res
           .confirm(code)
           .then((result) => {
-            ProjectService.chequeBookRequest(customer).then((res)=>{
-                console.log(res.data);
-                alert("Your CheckBook Will be Delivered To Your Register Address whitin 7-days")
-            })
-         
+            let name = `${customer.fname} ${customer.mname} ${customer.lname}`;
+            ProjectService.checkBookRequest({
+              accountNo: customer.accountNo,
+              name: name,
+              address: customer.address,
+              CIF: customer.CIF,
+              branchName: customer.branchName,
+            }).then((res) => {
+              console.log(res.data);
+              alert(
+                "Your Request Of CheckBook Will Be Approved Sortly"
+              );
+            });
           })
           .catch((err) => {
             console.log(err.message);
@@ -39,8 +49,8 @@ export const ApplyForCheque = (props) => {
       .catch((err) => {
         console.log(err.message);
       });
-      alert('You Successfully Registered')
-  }
+
+  };
   return (
     <>
       <Navbar id={props.match.params.id} />
@@ -72,11 +82,9 @@ export const ApplyForCheque = (props) => {
             className="form-control "
             value={`${customer.fname} ${customer.mname} ${customer.lname}`}
           />
-             <div className="mt-3">
+          <div className="mt-3">
             {" "}
-            <small className="fs-small text-success ">
-              Delivery Address
-            </small>
+            <small className="fs-small text-success ">Delivery Address</small>
           </div>
           <textarea
             type="text"
@@ -84,53 +92,53 @@ export const ApplyForCheque = (props) => {
             className="form-control  "
             value={customer.address}
           />
-             <div className="mt-3">
+          <div className="mt-3">
             {" "}
-            <small className="fs-small text-success ">
-              CIF
-            </small>
-            </div>
+            <small className="fs-small text-success ">CIF</small>
+          </div>
           <input
             type="text"
             placeholder="CIF"
             className="form-control  "
             value={customer.CIF}
           />
-             <div className="mt-3">
+          <div className="mt-3">
             {" "}
-            <small className="fs-small text-success ">
-              Branch Code
-            </small>
-            </div>
+            <small className="fs-small text-success ">Branch Code</small>
+          </div>
           <input
             type="text"
             placeholder="Branch Name"
             className="form-control  "
             value={customer.branchName}
           />
-            <div
+          <div
             id="recaptcha-container"
             data-size="compact"
             style={{ width: "400px" }}
           ></div>
-          <button className="btn btn-secondary w-100 mt-4" onClick={Apply}>Apply</button>
+          <button className="btn btn-secondary w-100 mt-4" onClick={Apply}>
+            Apply
+          </button>
         </form>
       </div>
-      <hr className="bg-secondary"/>
+      <hr className="bg-secondary" />
       <article className="container mb-5 ">
-      <div className="row">
-      <div className="col">
-      <small className="ml-3">Last Updated On :</small><small className="ml-2 ">{lastUpdateddate}</small>
-        <small className="ml-3 ">|</small>
-        <small className="ml-3 ">Visitors : 27591024</small>
-      </div>
+        <div className="row">
+          <div className="col">
+            <small className="ml-3">Last Updated On :</small>
+            <small className="ml-2 ">{lastUpdateddate}</small>
+            <small className="ml-3 ">|</small>
+            <small className="ml-3 ">Visitors : 27591024</small>
+          </div>
 
-
-        <div className="col">
-          <small className="float-right mr-3">Copyright <AiOutlineCopyright/> {todayDate.getFullYear()} Internet Banking project.All Rights Reserved </small>
+          <div className="col">
+            <small className="float-right mr-3">
+              Copyright <AiOutlineCopyright /> {todayDate.getFullYear()}{" "}
+              Internet Banking project.All Rights Reserved{" "}
+            </small>
+          </div>
         </div>
-      </div>
-   
       </article>
     </>
   );

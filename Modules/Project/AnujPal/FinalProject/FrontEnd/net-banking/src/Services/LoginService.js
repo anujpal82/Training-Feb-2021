@@ -72,8 +72,8 @@ class LoginService {
   deleteNominee(object) {
     return axios.post(ACCOUNT_BASE_URL + "/deleteNominee", object);
   }
-  chequeBookRequest(object) {
-    return axios.post(ACCOUNT_BASE_URL + "/chequeBookRequest", object);
+  checkBookRequest(object) {
+    return axios.post(ACCOUNT_BASE_URL + "/checkBookRequest", object);
   }
   getCheckBookRequest(object) {
     return axios.get(ADMIN + "/getCheckBookRequest", object);
